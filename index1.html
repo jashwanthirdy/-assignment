@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>ChronoNAD+ - Restore Your Cellular Energy</title>
+	<link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600;700&family=Poppins:wght@400;600;700&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+	<style>
+	/* Reset & base */
+	*{margin:0;padding:0;box-sizing:border-box}
+	:root{
+		--primary-color:#00215c;--secondary-color:#0057a6;--text-dark:#333;--text-light:#666;--white:#fff;
+		--light-bg:#f8f9fa;--gradient-primary:linear-gradient(135deg,#00215c 0%,#0057a6 100%);
+		--shadow-1:0 5px 15px rgba(0,0,0,.08);--shadow-2:0 10px 30px rgba(0,0,0,.12);--shadow-3:0 20px 40px rgba(0,0,0,.15);
+	}
+	body{font-family:'Source Sans Pro',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:var(--text-dark);line-height:1.6;overflow-x:hidden;scroll-behavior:smooth;background:#fff;}
+	.container{max-width:1200px;margin:0 auto;padding:0 20px;}
+
+	/* Header */
+	.header{background:#fff;position:sticky;top:0;z-index:1000;box-shadow:0 2px 10px rgba(0,0,0,.08);transition:all .3s ease;padding:18px 0;}
+	.nav{display:flex;justify-content:space-between;align-items:center;gap:12px;}
+	.logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;}
+	.logo img{height:42px;width:auto;display:block;}
+	.nav-links{display:flex;list-style:none;gap:2rem;align-items:center;}
+	.nav-links a{text-decoration:none;color:#333;font-weight:700;padding:.5rem 0;transition:color .25s ease;}
+	.nav-links a:hover{color:var(--primary-color)}
+	.cta-button{background:var(--gradient-primary);color:#fff;padding:10px 20px;border:none;border-radius:50px;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:var(--shadow-1);transition:transform .25s ease,box-shadow .25s ease;}
+	.cta-button:hover{transform:translateY(-2px);box-shadow:var(--shadow-3)}
+
+	/* Hamburger */
+	.hamburger{display:none;width:44px;height:44px;border:0;background:transparent;align-items:center;justify-content:center;gap:6px;cursor:pointer;}
+	.hamburger span{display:block;width:26px;height:3px;background:#0e2f6a;border-radius:2px;}
+	.hamburger.active span:nth-child(1){transform:translateY(9px) rotate(45deg)}
+	.hamburger.active span:nth-child(2){opacity:0}
+	.hamburger.active span:nth-child(3){transform:translateY(-9px) rotate(-45deg)}
+	.mobile-nav-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:900}
+	body.nav-open .mobile-nav-backdrop{opacity:1;pointer-events:auto}
+
+	@media (max-width:768px){
+		.hamburger{display:inline-flex}
+		.nav .cta-button{display:none}
+		.nav-links{position:fixed;top:72px;right:0;bottom:0;width:min(80vw,340px);background:#fff;box-shadow:-8px 0 24px rgba(0,0,0,.12);padding:24px;display:flex;flex-direction:column;gap:16px;transform:translateX(100%);transition:transform .25s ease;z-index:1000;}
+		body.nav-open .nav-links{transform:translateX(0)}
+	}
+
+	/* Hero */
+	.hero{padding:4.5rem 0;background:linear-gradient(135deg,#f8f9fa 0%,#ffffff 100%);min-height:72vh;display:flex;align-items:center;}
+	.hero-content{display:grid;grid-template-columns:1fr 1fr;gap:2.25rem;align-items:center;}
+	.hero-text h1{font-family:'Cabin',sans-serif;font-size:2.4rem;color:var(--primary-color);line-height:1.15;margin-bottom:1rem;}
+	.hero-text p{font-size:1.05rem;color:#666;margin-bottom:1.6rem;}
+	.hero-image{text-align:center;}
+	.product-image{width:min(420px,90%);height:auto;border-radius:22px;box-shadow:var(--shadow-3);display:block;margin:0 auto;}
+
+	/* Sections */
+	.section{padding:3.5rem 0;}
+	.section h2{font-family:'Cabin',sans-serif;font-size:1.9rem;font-weight:700;color:var(--primary-color);text-align:center;margin-bottom:1rem;}
+	.section p{text-align:center;color:#666;max-width:900px;margin:0 auto 1.25rem;font-size:1.02rem;}
+
+	/* Benefits & cards */
+	.benefits-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-top:1rem;}
+	.benefit-card{background:#fff;padding:1.4rem;border-radius:12px;box-shadow:var(--shadow-1);transition:transform .2s ease;border:1px solid rgba(0,33,92,.06)}
+	.benefit-card:hover{transform:translateY(-6px)}
+	.benefit-icon{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 0.9rem;font-size:1.6rem;color:#fff}
+	.energy-icon{background:linear-gradient(135deg,#FFC107,#FF9800)}
+	.dna-icon{background:linear-gradient(135deg,#9C27B0,#673AB7)}
+	.shield-icon{background:linear-gradient(135deg,#F44336,#E91E63)}
+	.benefit-card h3{font-family:'Poppins',sans-serif;font-size:1.05rem;color:var(--primary-color);margin:0 0 .45rem}
+	.benefit-card p{text-align:left;margin:0;color:#666;font-size:.95rem}
+
+	/* Chart section - layout adjusted to include vertical Y-axis */
+	.chart-section{background:linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%);padding-bottom:3.5rem}
+	.chart-container{display:grid;grid-template-columns:1fr 420px;gap:2rem;align-items:start;margin-top:1rem;max-width:1200px;margin-left:auto;margin-right:auto;}
+	@media (max-width:1100px){.chart-container{grid-template-columns:1fr 1fr}}
+	@media (max-width:820px){.chart-container{grid-template-columns:1fr;gap:1.25rem}}
+
+	/* Left: bar chart + y-axis */
+	.chart{background:#fff;padding:1.2rem;border-radius:12px;box-shadow:var(--shadow-1);position:relative;overflow:visible}
+	.chart .chart-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem}
+	.chart .chart-top h3{font-size:1.02rem;color:var(--primary-color);margin:0;font-weight:700}
+	.chart .chart-content{display:flex;gap:1rem;align-items:flex-end;position:relative}
+	/* Y axis (left) */
+	.y-axis{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;height:260px;padding-right:.5rem;margin-right:.5rem;color:#90a0b6;font-size:.82rem;font-weight:600}
+	.y-axis span{display:block;width:36px;text-align:right}
+	/* Bar chart area */
+	.bar-area{flex:1;display:flex;align-items:flex-end;gap:1rem;height:260px;padding:6px;border-radius:8px;background:repeating-linear-gradient(to top, #e9edf3 0 1px, transparent 1px 40px);box-shadow:inset 0 0 0 1px rgba(0,0,0,.03)}
+	.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+	.bar-fill{width:80%;height:0;border-radius:8px 8px 0 0;background:var(--gradient-primary);box-shadow:0 8px 18px rgba(0,33,92,.15);transition:height .9s cubic-bezier(.2,.9,.2,1)}
+	.bar-label{text-align:center;margin-top:.6rem;color:var(--primary-color);font-weight:700;font-size:.95rem}
+
+	/* Right: flow / how they work together card */
+	.flow-card{background:#fff;padding:1.2rem;border-radius:12px;box-shadow:var(--shadow-1);min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
+	.flow-steps{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:6px}
+	.flow-box{background:#e5f1fb;color:#0f3a7a;border-radius:12px;padding:10px 12px;font-weight:700;box-shadow:var(--shadow-1);width:100%;text-align:center;opacity:0;transform:translateY(10px);transition:all .45s ease}
+	.flow-box.final{background:#0f3a7a;color:#fff}
+	.flow-arrow{color:#0f3a7a;font-size:18px;opacity:0;transform:translateY(-6px);transition:all .3s ease}
+
+	/* Line chart / decline area */
+	.decline-chart{background:#fff;padding:1.2rem;border-radius:12px;box-shadow:var(--shadow-1);margin-top:1rem}
+
+    .line-chart-svg {
+  max-width: 400px;   /* shrink width */
+  max-height: 200px;  /* shrink height */
+  width: 100%;        /* make it responsive */
+  height: auto;       /* keep aspect ratio */
+  display: block;
+  margin: 0 auto;     /* center horizontally */
+}
+
+	.line-chart-svg .grid line{stroke:#e9edf3;stroke-width:1}
+	.line-chart-svg .axis{stroke:#c8d2e1;stroke-width:2}
+	.line-chart-svg .labels text,.line-chart-svg .xlabels text{fill:#6b7a90;font-size:12px;font-weight:600}
+	.decline-path{fill:none;stroke:#0057a6;stroke-width:4;stroke-linecap:round}
+	.pt{fill:#0057a6;stroke:#fff;stroke-width:2;opacity:0;transition:opacity .35s ease}
+	.decline-notes{margin-top:1rem;text-align:center}
+	.decline-notes h4{font-family:'Poppins',sans-serif;color:#00215c;margin-bottom:.4rem}
+	.decline-notes .source{color:#5b6a84;margin-top:.4rem}
+
+	/* Contact */
+	.contact-section{background:var(--gradient-primary);color:#fff;padding:3rem 0}
+	.contact-section h2,.contact-section p{color:#fff}
+	.contact-form{max-width:600px;margin:0 auto;background:rgba(255,255,255,.08);padding:1.6rem;border-radius:12px;backdrop-filter:blur(6px)}
+	.form-group{margin-bottom:1.1rem}
+	.form-group input,.form-group textarea{width:100%;padding:12px;border:2px solid rgba(255,255,255,.18);border-radius:8px;background:rgba(255,255,255,.04);color:#fff;font-size:1rem}
+	.form-group input::placeholder,.form-group textarea::placeholder{color:rgba(255,255,255,.86)}
+
+	/* Footer */
+	.footer{background:#001a4a;color:#fff;padding:2rem 0;text-align:center}
+	.footer-links{display:flex;justify-content:center;gap:1rem;margin-bottom:.8rem;flex-wrap:wrap}
+	.footer-links a{color:#fff;text-decoration:none;font-weight:700}
+	.social-icons{display:flex;justify-content:center;gap:1rem;margin-bottom:1rem}
+	.social-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.1);color:#fff;text-decoration:none}
+
+	/* Responsive tweaks */
+	@media (max-width:992px){
+		.hero-text h1{font-size:1.9rem}
+		.chart-container{grid-template-columns:1fr 1fr}
+	}
+	@media (max-width:820px){
+		.hero-content{grid-template-columns:1fr; text-align:center}
+		.chart-container{grid-template-columns:1fr}
+		.y-axis{display:none}
+		.flow-card{order:3}
+	}
+	</style>
+</head>
+<body>
+	<header class="header">
+		<div class="container nav">
+			<a class="logo" href="#product" aria-label="CellStart home">
+				<img src="Slide 4 Logo 1.png" alt="CellStart logo">
+			</a>
+
+			<nav style="display:flex;align-items:center;gap:18px">
+				<button class="hamburger" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
+				<ul class="nav-links" role="list" style="display:flex;gap:18px;align-items:center">
+					<li><a href="#product">Product</a></li>
+					<li><a href="#science">Science</a></li>
+					<li><a href="#benefits">Benefits</a></li>
+                    <li><a href="#NAD+ Levels by Age">NAD+ Levels by Age</a>
+					<li><a href="#how-it-works">How It Works</a></li>
+				
+				</ul>
+				<a href="#shop" class="cta-button">Shop Now</a>
+			</nav>
+		</div>
+	</header>
+	<div class="mobile-nav-backdrop" aria-hidden="true"></div>
+
+	<!-- Hero -->
+	<section class="hero" id="product">
+		<div class="container hero-content">
+			<div class="hero-text">
+				<h1>Restore Your Cellular Energy with ChronoNAD+</h1>
+				<p>Experience the power of ChronoNAD+, scientifically formulated to combat NAD+ decline. Reclaim youthful vitality, enhance DNA repair, and boost cellular defense for a healthier, more energized you.</p>
+				<a href="#benefits" class="cta-button">Explore Benefits</a>
+			</div>
+
+			<!-- Second image (centered responsively) -->
+			<div class="hero-image" aria-hidden="false">
+				<!-- Move image to center on all sizes; user said second image was left -> now centered -->
+				<img class="product-image" src="Slide 4 Product.png" alt="ChronoNAD+ bottle - product">
+			</div>
+		</div>
+	</section>
+
+	<!-- Science -->
+	<section class="section" id="science">
+		<div class="container">
+			<h2>Why is NAD+ Your Cellular Fuel?</h2>
+			<div class="benefits-grid" style="margin-top:1rem">
+				<div class="benefit-card">
+					<div class="benefit-icon energy-icon">⚡</div>
+					<h3>Energy Production</h3>
+					<p>NAD+ is a key driver of metabolism, helping your body turn food into usable energy for every cell. It powers the mitochondria, ensuring optimal ATP production for sustained energy throughout the day.</p>
+				</div>
+				<div class="benefit-card">
+					<div class="benefit-icon dna-icon">🧬</div>
+					<h3>DNA Repair</h3>
+					<p>NAD+ helps power DNA repair pathways and fuels essential repair enzymes that maintain genomic stability and prevent cellular damage accumulation.</p>
+				</div>
+				<div class="benefit-card">
+					<div class="benefit-icon shield-icon">🛡️</div>
+					<h3>Cellular Defense</h3>
+					<p>NAD+ activates important "longevity genes" and supports sirtuins which regulate cellular stress response, metabolism, and inflammation.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Benefits + Bar chart + Flow graph -->
+	<section class="section chart-section" id="benefits">
+		<div class="container">
+			<h2>The 1.7x Advantage</h2>
+			<p>Research shows that combining NAD+ with Resveratrol can boost NAD+ levels up to 1.7x higher than NAD+ alone by activating sirtuins and supporting NAD+ synthesis.</p>
+
+			<div class="chart-container" aria-hidden="false">
+				<!-- LEFT: bar chart with Y axis -->
+				<div class="chart" role="region" aria-label="Bar chart showing NAD+ Alone vs NAD+ with Resveratrol">
+					<div class="chart-top">
+						<h3>Increase in NAD+ (Relative)</h3>
+						<div style="font-size:.9rem;color:#90a0b6">Source: Jiang et al., Pharmacology Research & Perspectives, 2022</div>
+					</div>
+
+					<div class="chart-content" style="gap:12px">
+						<!-- Y axis labels -->
+						<div class="y-axis" aria-hidden="true">
+							<span>200%</span>
+							<span>150%</span>
+							<span>125%</span>
+							<span>100%</span>
+							<span>75%</span>
+							<span>50%</span>
+							<span>0%</span>
+						</div>
+
+						<!-- Bar chart area -->
+						<div class="bar-area" id="barArea">
+							<div class="bar" aria-hidden="false">
+								<div class="bar-fill" role="img" aria-label="NAD+ Alone 100 percent" data-percent="100"></div>
+								<div class="bar-label">NAD+ Alone<br><strong>100%</strong></div>
+							</div>
+							<div class="bar" aria-hidden="false">
+								<div class="bar-fill" role="img" aria-label="NAD+ with Resveratrol 170 percent" data-percent="170"></div>
+								<div class="bar-label">NAD+ + Resveratrol<br><strong>170%</strong></div>
+							</div>
+						</div>
+					</div>
+
+					<!-- optional small note under chart -->
+					<div style="margin-top:.8rem;text-align:center;color:#6b7a90;font-size:.92rem">
+						Combining an NAD+ precursor with Resveratrol creates a synergistic effect that may increase NAD+ bioavailability.
+					</div>
+				</div>
+
+				<!-- RIGHT: How They Work Together flow graph -->
+				<div class="flow-card" role="region" aria-label="How Resveratrol and NAD+ work together">
+					<h3 style="color:var(--primary-color);margin-bottom:.6rem">How They Work Together</h3>
+					<div class="flow-steps" id="flowSteps" aria-hidden="false">
+						<div class="flow-box">Resveratrol (activator)</div>
+						<div class="flow-arrow" aria-hidden="true">▼</div>
+						<div class="flow-box">Activates Sirtuins ("Longevity" Genes)</div>
+						<div class="flow-arrow" aria-hidden="true">▼</div>
+						<div class="flow-box">Enhances NAD+ Function & Synthesis</div>
+						<div class="flow-arrow" aria-hidden="true">▼</div>
+						<div class="flow-box final">Improved Cellular Energy, DNA Repair & Defense</div>
+					</div>
+
+					<!-- small source note -->
+					<div style="margin-top:12px;color:#62748f;font-size:.9rem;text-align:center">Synergistic mechanism improves sirtuin activity and NAD+ utilization.</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- NAD+ Decline section -->
+	<section class="section" id="NAD+ Levels by Age">
+		<div class="container">
+			<h2>NAD+ Declines by Up to 65% Between Ages 30 and 70</h2>
+			<div class="chart-container center-layout" style="grid-template-columns:1fr">
+				<div class="decline-chart">
+					<h3 style="color:var(--primary-color);margin-bottom:.5rem">NAD+ Levels by Age</h3>
+					<svg class="line-chart-svg" viewBox="0 0 420 260" role="img" aria-label="Line chart of NAD+ decline from 20s to 70s">
+						<g class="grid">
+							<line x1="40" y1="40" x2="400" y2="40"></line>
+							<line x1="40" y1="80" x2="400" y2="80"></line>
+							<line x1="40" y1="120" x2="400" y2="120"></line>
+							<line x1="40" y1="160" x2="400" y2="160"></line>
+							<line x1="40" y1="200" x2="400" y2="200"></line>
+						</g>
+						<line class="axis" x1="40" y1="20" x2="40" y2="220"></line>
+						<line class="axis" x1="40" y1="220" x2="400" y2="220"></line>
+						<g class="labels">
+							<text x="28" y="224">0%</text>
+							<text x="20" y="184">25%</text>
+							<text x="20" y="144">50%</text>
+							<text x="20" y="104">75%</text>
+							<text x="16" y="64">100%</text>
+						</g>
+						<g class="xlabels">
+							<text x="80" y="244">20s</text>
+							<text x="160" y="244">30s–40s</text>
+							<text x="240" y="244">50s–60s</text>
+							<text x="320" y="244">70s+</text>
+						</g>
+						<path class="decline-path" d="M40,60 L120,110 L240,150 L400,190"></path>
+						<circle class="pt" cx="40" cy="60" r="4"></circle>
+						<circle class="pt" cx="120" cy="110" r="4"></circle>
+						<circle class="pt" cx="240" cy="150" r="4"></circle>
+						<circle class="pt" cx="400" cy="190" r="4"></circle>
+					</svg>
+
+					<div class="decline-notes">
+						<h4>The Aging Challenge</h4>
+						<p>By middle age, our NAD+ levels can plummet to half of what they were in our youth. This natural decline affects cellular energy, DNA repair, and resilience.</p>
+						<p class="source"><strong>Source:</strong> Massudi et al., PLoS ONE, 2012. Jinfiniti Health Report.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- How it works (detailed steps) -->
+	<section class="section" id="how-it-works">
+		<div class="container">
+			<h2>How It Works</h2>
+			<div class="steps" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:12px">
+				<div class="step" style="background:#fff;padding:12px;border-radius:10px;box-shadow:var(--shadow-1)">
+					<div style="font-size:1.6rem">🧬</div>
+					<h3 style="color:var(--primary-color);margin-top:8px">Activate Longevity Genes</h3>
+					<p>Resveratrol activates sirtuins—the "longevity genes"—which support cellular repair and healthy aging processes.</p>
+				</div>
+				<div class="step" style="background:#fff;padding:12px;border-radius:10px;box-shadow:var(--shadow-1)">
+					<div style="font-size:1.6rem">📈</div>
+					<h3 style="color:var(--primary-color);margin-top:8px">Boost NAD+ Function</h3>
+					<p>Activated sirtuins optimize NAD+ function and synthesis, creating a more efficient cellular environment for energy production.</p>
+				</div>
+				<div class="step" style="background:#fff;padding:12px;border-radius:10px;box-shadow:var(--shadow-1)">
+					<div style="font-size:1.6rem">❤️</div>
+					<h3 style="color:var(--primary-color);margin-top:8px">Enhance Cellular Health</h3>
+					<p>Elevated NAD+ levels support energy metabolism, DNA repair, and cellular defense mechanisms for optimal health.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Contact -->
+	<section class="section contact-section" id="shop">
+		<div class="container">
+			<h2 style="text-align:center">Get Started Today</h2>
+			<p style="text-align:center">Ready to restore your cellular energy? Contact us to learn more about ChronoNAD+.</p>
+			<form class="contact-form" id="contactForm" action="contact.php" method="POST" novalidate>
+				<div class="form-group">
+					<input type="text" id="name" name="name" placeholder="Your Name" required>
+				</div>
+				<div class="form-group">
+					<input type="email" id="email" name="email" placeholder="Your Email" required>
+				</div>
+				<div class="form-group">
+					<textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+				</div>
+				<button type="submit" class="cta-button">Send Message</button>
+			</form>
+		</div>
+	</section>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="footer-links">
+				<a href="#product">Product</a>
+				<a href="#science">Science</a>
+				<a href="#benefits">Benefits</a>
+				<a href="#how-it-works">How It Works</a>
+				<a href="#flow">Flow</a>
+			</div>
+			<div class="social-icons">
+				<a href="#" class="social-icon" aria-label="Facebook">📘</a>
+				<a href="#" class="social-icon" aria-label="Twitter">🐦</a>
+				<a href="#" class="social-icon" aria-label="Instagram">📷</a>
+			</div>
+			<p>&copy; 2024 CellStart. All rights reserved.</p>
+		</div>
+	</footer>
+
+	<script>
+	// Init on DOM ready
+	document.addEventListener('DOMContentLoaded', () => {
+		initHamburger();
+		initSmoothScroll();
+		initHeaderScroll();
+		initBarsAndLineAnimations();
+		initFlowAnimation();
+		initContactForm();
+	});
+
+	/* Hamburger */
+	function initHamburger() {
+		const hamburger = document.querySelector('.hamburger');
+		const navLinks = document.querySelector('.nav-links');
+		const backdrop = document.querySelector('.mobile-nav-backdrop');
+		if (!hamburger || !navLinks || !backdrop) return;
+		function openNav(){document.body.classList.add('nav-open');hamburger.classList.add('active');hamburger.setAttribute('aria-expanded','true');document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden'}
+		function closeNav(){document.body.classList.remove('nav-open');hamburger.classList.remove('active');hamburger.setAttribute('aria-expanded','false');document.documentElement.style.overflow='';document.body.style.overflow=''}
+		function toggle(){document.body.classList.contains('nav-open')?closeNav():openNav()}
+		hamburger.addEventListener('click', toggle);
+		backdrop.addEventListener('click', closeNav);
+		navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click', closeNav));
+		window.addEventListener('resize', ()=>{ if(window.innerWidth>768) closeNav(); });
+	}
+
+	/* Smooth scroll */
+	function initSmoothScroll() {
+		document.querySelectorAll('a[href^="#"]').forEach(a => {
+			a.addEventListener('click', e => {
+				const id = a.getAttribute('href');
+				if (!id || id === '#') return;
+				const target = document.querySelector(id);
+				if (!target) return;
+				e.preventDefault();
+				const headerH = document.querySelector('.header').offsetHeight;
+				const y = target.getBoundingClientRect().top + window.pageYOffset - headerH + 4;
+				window.scrollTo({ top: y, behavior: 'smooth' });
+			});
+		});
+	}
+
+	/* Header scroll styling */
+	function initHeaderScroll() {
+		const header = document.querySelector('.header');
+		if (!header) return;
+		window.addEventListener('scroll', () => {
+			header.style.background = window.scrollY > 100 ? 'rgba(255,255,255,0.96)' : '#fff';
+		});
+	}
+
+	/* Bars and Line animations */
+	function initBarsAndLineAnimations() {
+		// Bar animations - compute heights from data-percent and container height
+		const barArea = document.getElementById('barArea');
+		if (barArea) {
+			const bars = barArea.querySelectorAll('.bar-fill');
+			const observer = new IntersectionObserver(entries => {
+				entries.forEach(entry => {
+					if (entry.isIntersecting) {
+						bars.forEach((bar,i) => {
+							const percent = Number(bar.getAttribute('data-percent') || '0');
+							const containerH = barArea.clientHeight; // 260 in CSS
+							// We'll allow up to 200% scale so percent maps to height (200% -> full container)
+							const maxPercent = 200;
+							const targetPx = Math.max(4, Math.min(containerH, containerH * (percent / maxPercent)));
+							bar.style.transition = 'height 900ms cubic-bezier(.2,.9,.2,1)';
+							setTimeout(()=> { bar.style.height = targetPx + 'px'; }, i*160);
+						});
+					} else {
+						bars.forEach(bar => { bar.style.height = '0px'; });
+					}
+				});
+			}, { threshold: 0.35 });
+			observer.observe(barArea);
+		}
+
+		// Line SVG animation
+		const lineSvg = document.querySelector('.line-chart-svg');
+		if (!lineSvg) return;
+		const path = lineSvg.querySelector('.decline-path');
+		const points = lineSvg.querySelectorAll('.pt');
+		const length = path.getTotalLength();
+		const lineObserver = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (!path) return;
+				if (entry.isIntersecting) {
+					path.style.transition = 'none';
+					path.style.strokeDasharray = length + ' ' + length;
+					path.style.strokeDashoffset = length;
+					requestAnimationFrame(() => {
+						path.style.transition = 'stroke-dashoffset 1100ms ease';
+						path.style.strokeDashoffset = '0';
+					});
+					points.forEach((c,i)=> setTimeout(()=>{ c.style.opacity='1'; }, 300 + i*140));
+				} else {
+					path.style.transition = 'none';
+					path.style.strokeDasharray = length + ' ' + length;
+					path.style.strokeDashoffset = length;
+					points.forEach(c => c.style.opacity = '0');
+				}
+			});
+		}, { threshold: 0.35 });
+		lineObserver.observe(lineSvg);
+	}
+
+	/* Flow animation */
+	function initFlowAnimation() {
+		const flow = document.getElementById('flowSteps');
+		if (!flow) return;
+		const boxes = flow.querySelectorAll('.flow-box, .flow-arrow');
+		const io = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					boxes.forEach((el,i) => {
+						setTimeout(()=> { el.style.opacity='1'; el.style.transform='translateY(0)'; }, i*130);
+					});
+				} else {
+					boxes.forEach(el => {
+						el.style.opacity='0';
+						el.style.transform = el.classList.contains('flow-arrow') ? 'translateY(-6px)' : 'translateY(10px)';
+					});
+				}
+			});
+		}, { threshold: 0.25 });
+		io.observe(flow);
+	}
+
+	/* Contact form UX (client-side only) */
+	function initContactForm() {
+		const form = document.getElementById('contactForm');
+		if (!form) return;
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const data = new FormData(form);
+			const name = data.get('name')?.toString().trim();
+			const email = data.get('email')?.toString().trim();
+			const message = data.get('message')?.toString().trim();
+			if (!name || !email || !message) return alert('Please fill in all fields.');
+			if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert('Enter a valid email.');
+			const btn = form.querySelector('button[type="submit"]');
+			const txt = btn.textContent; btn.textContent = 'Sending…'; btn.disabled = true;
+			// Use fetch to POST to contact.php and show response
+			fetch(form.action, {
+				method: 'POST',
+				body: new URLSearchParams({ name, email, message }),
+				headers: { 'Accept': 'application/json' }
+			}).then(r => r.json()).then(resp => {
+				if (resp && resp.success) {
+					alert(resp.message || 'Thank you! We will reach out soon.');
+					form.reset();
+				} else {
+					alert(resp.error || 'Failed to send message. Please try again later.');
+				}
+			}).catch(() => {
+				alert('Failed to send message. Please try again later.');
+			}).finally(()=> {
+				btn.textContent = txt; btn.disabled = false;
+			});
+		});
+	}
+	</script>
+</body>
+</html>
